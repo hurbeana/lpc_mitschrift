@@ -8,3 +8,6 @@ Datum mit einem vorangehendem `# ` (mit Space danach) und Beispiele mit `## ` an
 
 # Github Markdown
 Für mehr Infos zu Github Markdown siehe [hier](https://gist.github.com/MinhasKamal/7fdebb7c424d23149140)
+
+# Website
+Die Mitschrift ist als HTML [hier](https://hurbeana.github.io/lpc_mitschrift/) sichtbar.
