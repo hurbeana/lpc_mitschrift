@@ -717,4 +717,284 @@ reim -->
 ```
 
 # 03.04.2019
+
 ## Bsp 38
+
+```
+:- phrase(expr,Xs).
+:/-& phrase(expr,Xs), false.
+:- phrase(expr,"(1+(1+1))").
+:- phrase(expr,"((1+1)+1)").
+:- phrase(expr,"1").
+:/- phrase(expr,"2").
+:/- phrase(expr,['2'|_]).
+:- phrase(expr,"(1+1)").
+:/- phrase(expr,"(1+1").
+:/- phrase(expr,['(','1',+'1']).
+:/- phrase(expr,['(','1',+'1'|_]).
+:- phrase(expr,"(1*1)").
+:- phrase(expr,['(','1',*,'1'|_]).
+:/- phrase(expr,"(1+ 1)").
+
+:- Xs=[_,_,_,_,_], phrase(expr,Xs);
+:/- Xs=[_,_,_,_,_], phrase(expr,Xs), false;
+
+:- text(Text) <<< list_length(Text,17), phrase(expr,Text).
+
+:- dif(A,B), phrase(expr,[A,B|_]).
+:/-& dif(A,B), phrase(expr,[A,B|_]), false.
+```
+
+Definition
+
+```
+expr -->
+	"1".
+expr -->
+	"(",
+	expr,
+	"+",
+	expr,
+	")".
+```
+
+## Bsp 39/40
+
+
+```
+:- syntaxbaum(Baum) <<< is_expr(Baum).
+
+is_expr(knoten(1,[])).
+is_expr(knoten(+,[ExprL,ExprR])) :-
+	is_expr(ExprL),
+	is_expr(ExprR).
+
+:- phrase(expr(knoten(+,[knoten(1,[]),knoten(1,[])])),"(1+1)").
+:- syntaxbaum(Expr) <<< list_length(Text,N),phrase(expr(Expr),Text).
+
+:- phrase(expr(Expr), Text).
+:/- phrase(expr(Expr), Text), false.
+
+:- Text="(1+(1+1))", phrase(expr(Expr),Text).
+:- Expr=knoten(+,[knoten(1,[]),knoten(+,[knoten(1,[]),knoten(1,[])])]), phrase(expr(Expr),Text). %not sure if it's correct
+
+expr(knoten(1,[])) -->
+	"1".
+expr(knoten(+,[ExprL,ExprR]9) -->
+	"(",
+	expr(ExprL),
+	"+",
+	expr(ExprR),
+	")".
+```
+
+Kann '(' und direkt danach ')' vorkommen?
+
+```
+:- list_length(Text,N), phrase(expr(Expr),Text), phrase(textwithbrackets, Text), false.
+
+:/-& list_length(Text,N), phrase(expr(Expr),Text), phrase(textwithnilpair, Text).
+:/-& list_length(Text,N), phrase(expr(Expr),Text), phrase(textwithnilpair, Text), false.
+
+textwithnilpair -->
+	...,
+	"()",
+	... .
+	
+textwithbrackets -->
+	...,
+	"))))",
+	... .
+```
+
+## Bsp 41
+
+```
+:- expr_knotennamenrpn(Expr,Knotennamen).
+:/-& expr_knotennamenrpn(Expr,Knotennamen), false.
+
+:- list_length(Knotennamen, N), expr_knotennamenrpn(Expr,Knotennamen).
+
+:/-& phrase(knotennamenrpn(_),[]).
+
+:- Knotennamen = [_,_|_], expr_knotennamenrpn(Expr, Knotennamen).
+:/-& Knotennamen = [_,_|_], expr_knotennamenrpn(Expr, Knotennamen), false.
+:- Knotennamen = [any0,any1,any2], Expr = knoten(any0,[knoten(any1,[]),knoten(any2,[])]), expr_knotennamenrpn(Expr, Knotennamen).
+```
+
+Wieder Zusicherungen schreiben, in denen nur Expr und nur Knotennamen vorkommt.
+
+```
+expr_knotennamenrpn(Expr, Knotennamen) :-
+	phrase(knotennamen(Expr), Knotennamen).
+
+expr_knotennamenrpn(knoten(N,[])) -->
+	[N].
+expr_knotennamenrpn(knoten(N, [L,R])) -->
+	knotennamen(R),
+	knotennamen(L),
+	[N].
+```
+
+## Bsp 42
+
+```
+:- expr_knotenname(Expr,Name).
+:/- expr_knotenname(Expr,Name), false.
+:- expr_knotenname(knoten(n,nonlist),Name).
+
+:- Expr = knoten(any0,[knoten(any1,[]),knoten(any2,[])]), expr_knotenname(Expr, any0).
+
+:- expr_knotenname(knoten(+, [knoten(1,[]), knoten(1,[])]),1).
+:- expr_knotenname(knoten(+, [knoten(1,[]), knoten(1,[])]),+).
+:- expr_knotenname(knoten(+, [knoten(1,[]), knoten(2,[])]),1).
+:- expr_knotenname(knoten(+, [knoten(1,[]), knoten(1,[])]),2).
+
+expr_knotenname(knoten(N,_),N).
+expr_knotenname(knoten(_,[L,_]),N) :-
+	expr_knotenname(L,N).
+expr_knotenname(knoten(_,[_,R]),N) :-
+	expr_knotenname(R,N).
+```
+
+## Bsp 44
+
+```
+:- phrase(seq(Cs), Es).
+:/-& phrase(seq(Cs), Es), false.
+
+:- Cs = [_,_,_], phrase(seq(Cs), Es).
+:/- Cs = [_,_,_], phrase(seq(Cs), Es), false.
+
+:/- Cs = "abc", Es = "xbc", phrase(seq(Cs),Es).
+:/- dif(V0,V1), Cs = [V0|_], Es = [V1|_], phease(seq(Cs),Es).
+
+:- phrase(seq("abc"), "abc").
+:/- phrase(seq("abc"), "abe").
+
+seq([]) -->
+	[].
+seq([E|Es]) -->
+	[E],
+	seq[Es].
+```
+
+```
+:- phrase(invseq(Cs),Es).
+:/-& phrase(invseq(Cs),Es), false.
+
+:- Cs = [_,_,_], phrase(invseq(Cs), Es).
+:/-& Cs = [_,_,_], phrase(invseq(Cs), Es), false.
+
+invseq([]) -->
+	[].
+invseq([E|Es]) -->
+	invseq(Es),
+	[E].
+
+```
+
+```
+:- invseq2(Xs,Ys).
+
+invseq2p(Xs, Ys) :-
+	phrase(invseq2(Xs,Ys),Ys).
+
+invseq2([], _) -->
+	[].
+invseq2([E|Es], [_|L]) -->
+	invseq(Es, L),
+	[E].
+```
+
+```
+:- phrase(palindrom, Xs).
+:/-& phrase(palindrom, Xs), false.
+
+:- Xs=[_,_,_,_,_], phrase(palindrom, Xs).
+
+:- phrase(palindrom, "t").
+:- phrase(palindrom, "tt").
+:- phrase(palindrom, "otto").
+:- phrase(palindrom, "tacocat").
+:- phrase(palindrom, "stets").
+
+```
+
+Wenn man optional nicht einbaut, können nur Palindrome mit gerade Länge aufgezählt werden.
+
+```
+palindrom -->
+	seq(Xs),
+	optional,
+	invseq(Xs).
+
+:- phrase(optional,_).
+
+optional -->
+	[].
+optional -->
+	[_].
+```
+
+Versuchen wir es also ohne Hilfsprädikat.
+
+
+```
+:- phrase(palindrom2,Xs).
+
+palindrom2 -->
+	[].
+palindrom2 -->
+	[_].
+palindrom2 -->
+	[E],
+	palindrom2,
+	[E].
+```
+
+## Bsp 45
+
+```
+:- listen_zusammen(Xss, Es). %Xss ist eine Liste von Listen
+:/-& listen_zusammen(Xss, Es), false.
+
+:- Xss = [_,_,_], listen_zusammen(Xss, Es).
+:/-& Xss = [_,_,_], listen_zusammen(Xss, Es), false.
+
+:- Es = [_,_,_,_], Xss = [_,_,_], listen_zusammen(Xss, Es).
+:/-& Es = [_,_,_,_], Xss = [_,_,_], listen_zusammen(Xss, Es), false.
+
+:- listen_zusammen([[a|_]|_],[b|_]).
+:- listen_zusammen([[1,2],[3],[4,5]],Es).
+
+seqq([]) -->
+	[].
+seqq([Es|Ess]) -->
+	seq(Es),
+	seqq(Ess).
+
+listen_zusammen(Xss, Es) :-
+	phrase(seqq(Xss), Es).
+```
+
+## Bsp 46
+
+Es sind bereits ein paar Zusicherungen gegeben ...
+
+```
+zahlenpaarD(P).
+
+%zahlenpaarD(paar(X,Y)) :-
+%	natürlichezahlsx(Z),
+%	größer_als(Z,X),
+%	größer_als(Z,Y).
+
+zahlenpaarD(paar(X,Y)) :-
+	natürlichezahlsx(Z),
+	nat_nat_summe(X,Y,Z).
+
+zahlenpaar(paar(X,Y)) :-
+	natürlichezahlsx(X),
+	natürlichezahlsx(Y).
+```
