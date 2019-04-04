@@ -710,8 +710,7 @@ Referenzimplemetierung verwenden (indem man `:/- phrase(reim, Satz)`) und es sic
 reim -->
     "Auf ",
     wort1,
-    "und Fleiß, ",
-    "folgt ",
+    " und Fleiß, folgt ",
     wort2,
     " und Preiß".
 ```
