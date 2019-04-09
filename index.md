@@ -807,22 +807,6 @@ textwithbrackets -->
 ```
 
 ## Bsp 41
-
-```
-:- expr_knotennamenrpn(Expr,Knotennamen).
-:/-& expr_knotennamenrpn(Expr,Knotennamen), false.
-
-:- list_length(Knotennamen, N), expr_knotennamenrpn(Expr,Knotennamen).
-
-:/-& phrase(knotennamenrpn(_),[]).
-
-:- Knotennamen = [_,_|_], expr_knotennamenrpn(Expr, Knotennamen).
-:/-& Knotennamen = [_,_|_], expr_knotennamenrpn(Expr, Knotennamen), false.
-:- Knotennamen = [any0,any1,any2], Expr = knoten(any0,[knoten(any1,[]),knoten(any2,[])]), expr_knotennamenrpn(Expr, Knotennamen).
-```
-
-Wieder Zusicherungen schreiben, in denen nur Expr und nur Knotennamen vorkommt.
-
 ```
 expr_knotennamen(Expr, Knotennamen) :-
 	phrase(knotennamen(Expr), Knotennamen).
@@ -837,7 +821,20 @@ knotennamen(knoten(N, [ExprL,ExprR])) -->
 ```
 
 ## Bsp 42
+
+Wieder Zusicherungen schreiben, in denen nur Expr und nur Knotennamen vorkommt.
 ```
+:- expr_knotennamenrpn(Expr,Knotennamen).
+:/-& expr_knotennamenrpn(Expr,Knotennamen), false.
+
+:- list_length(Knotennamen, N), expr_knotennamenrpn(Expr,Knotennamen).
+
+:/-& phrase(knotennamenrpn(_),[]).
+
+:- Knotennamen = [_,_|_], expr_knotennamenrpn(Expr, Knotennamen).
+:/-& Knotennamen = [_,_|_], expr_knotennamenrpn(Expr, Knotennamen), false.
+:- Knotennamen = [any0,any1,any2], Expr = knoten(any0,[knoten(any1,[]),knoten(any2,[])]), expr_knotennamenrpn(Expr, Knotennamen).
+
 expr_knotennamenrpn(knoten(N,[])) -->
 	[N].
 expr_knotennamenrpn(knoten(N, [L,R])) -->
