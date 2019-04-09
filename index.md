@@ -779,7 +779,7 @@ is_expr(knoten(+,[ExprL,ExprR])) :-
 
 expr(knoten(1,[])) -->
 	"1".
-expr(knoten(+,[ExprL,ExprR]9) -->
+expr(knoten(+,[ExprL,ExprR])) -->
 	"(",
 	expr(ExprL),
 	"+",
