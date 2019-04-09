@@ -824,9 +824,19 @@ textwithbrackets -->
 Wieder Zusicherungen schreiben, in denen nur Expr und nur Knotennamen vorkommt.
 
 ```
-expr_knotennamenrpn(Expr, Knotennamen) :-
+expr_knotennamen(Expr, Knotennamen) :-
 	phrase(knotennamen(Expr), Knotennamen).
 
+knotennamen(knoten(N, [])) -->
+	[N].
+knotennamen(knoten(N, [ExprL,ExprR])) -->
+	[N],
+	knotennamen(ExprL),
+	knotennamen(ExprR).
+
+```
+
+```
 expr_knotennamenrpn(knoten(N,[])) -->
 	[N].
 expr_knotennamenrpn(knoten(N, [L,R])) -->
