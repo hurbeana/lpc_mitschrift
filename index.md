@@ -836,6 +836,7 @@ knotennamen(knoten(N, [ExprL,ExprR])) -->
 
 ```
 
+## Bsp 42
 ```
 expr_knotennamenrpn(knoten(N,[])) -->
 	[N].
@@ -845,7 +846,7 @@ expr_knotennamenrpn(knoten(N, [L,R])) -->
 	[N].
 ```
 
-## Bsp 42
+## Bsp 43
 
 ```
 :- expr_knotenname(Expr,Name).
