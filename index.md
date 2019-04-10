@@ -1005,3 +1005,281 @@ zahlenpaar(paar(X,Y)) :-
 	natürlichezahlsx(X),
 	natürlichezahlsx(Y).
 ```
+
+# 10.04.2019
+
+Dadurch, dass mit 53-56 begonnen wurde und 48-52 am Ende kam, sind 51&52 relativ kurz.
+
+## Bsp 48
+
+```
+:- phrase(basen, Bs).
+:/-& phrase(basen, Bs), false.
+
+:- list_length(Bs, N), phrase(basen, Bs). %faires aufzählen
+
+:- Bs = [_,_,_,_], phrase(basen, Bs).
+:/- Bs = [_,_,_,_], phrase(basen, Bs), false.
+:- Bs = [_,_,_,_,_,_,_,_], phrase(basen, Bs).
+:/-$ Bs = [_,_,_,_,_,_,_,_], phrase(basen, Bs), false.
+
+:- phrase(basen, "ACTAA").
+:- phrase(basen, "ACXAA").
+:- phrase(basen, [_,_,"X"|_]).
+
+basen -->
+	"".
+basen -->
+	base,
+	basen.
+
+base -->
+	"A".
+base -->
+	"C".
+base -->
+	"G".
+base -->
+	"T".
+```
+
+## Bsp 49
+
+```
+:- phrase(tandemrepeat(Xs), Ys).
+:/-& phrase(tandemrepeat(Xs), Ys), false.
+:- Xs=[_,_,_,_], phrase(tandemrepeat(Xs), Ys).
+:/-& Xs=[_,_,_,_], phrase(tandemrepeat(Xs), Ys), false.
+
+:- Ys=[_,_,_,_], phrase(tandemrepeat(Xs), Ys).
+:/-& Ys=[_,_,_,_], phrase(tandemrepeat(Xs), Ys), false.
+:/-& Ys=[_,_,_,_,_], phrase(tandemrepeat(Xs), Ys), false.
+
+:- phrase(tandemrepeat("ACT"), "ACTACT").
+:/- phrase(tandemrepeat("CCT"), "ACTACT").
+:/- dif(V0,V1), phrase(tandemrepeat([V0|_]), [V1|_]).
+:/- phrase(tandemrepeat([]), Bs).
+
+tandemrepeat(Xs) -->
+	{Xs = [_|_]}, %Zusicherung innerhalb der Grammatik
+	seq(Xs),
+	seq(Xs).
+
+:- phrase(substr_tandemrepeat(Xs), Ys).
+:/-& phrase(substr_tandemrepeat(Xs), Ys), false.
+:- phrase(substr_tandemrepeat(Xs), "GGGGACTACTCCCC").
+:/- phrase(substr_tandemrepeat(Xs), "GGGGACTACTCCCC"), false.
+:- phrase(substr_tandemrepeat("ACT"), ['G','G'|_]).
+:/- phrase(substr_tandemrepeat("ACT"), ['G','G'|_]), false.
+
+substr_tandemrepeat(Xs) -->
+	...,
+	tandemrepeat(Xs),
+	... .
+
+:- Xs=Xs, genom(G), phrase(substr_tandemrepeat(Xs), G).
+:- Xs=[_,_,_,_,_,_], genom(G), phrase(substr_tandemrepeat(Xs),G).
+:- Xs=[_,_,_,_,_,_|_], genom(G), phrase(substr_tandemrepeat(Xs),G).
+:/- Xs=[_,_,_,_,_,_,_], genom(G), phrase(substr_tandemrepeat(Xs),G).
+:-$ Xs=[_,_,_,_,_,_,_|_], genom(G), phrase(substr_tandemrepeat(Xs),G).
+```
+
+## Bsp 50
+
+```
+:- phrase(komplseq(Xs), Bs).
+:/- phrase(komplseq(Xs), Bs), false.
+:- phrase(komplseq(Xs), "CGCTAA").
+:/- phrase(komplseq(Xs), "CGCTAA"), false.
+:- phrase(komplseq("TTAGCG"), "CGCTAA").
+:/- phrase(komplseq("TTAGCG"), "CGCTAA"), false.
+:/- phrase(komplseq("TTGGCG"), "CGCTAA").
+
+:- base_kompl(B, K).
+
+base_kompl('A', 'T').
+base_kompl('C', 'G').
+base_kompl('G', 'C').
+base_kompl('T', 'A').
+
+komplseq([]) -->
+	[].
+komplseq([B|Bs]) -->
+	{base_kompl(B,C)},
+	komplseq(Bs),
+	[C].
+
+:- phrase(einfachschleife_(Bindung,Knick), Bs).
+:/-& phrase(einfachschleife_(Bindung,Knick), Bs), false.
+:- phrase(einfachschleife_(Bindung,Knick), "TTAGCGAAACGCTAA").
+:/- phrase(einfachschleife_(Bindung,Knick), "TTAGCGAAACGCTAA"), false.
+:- phrase(einfachschleife_("TTAGCG","AAA"), Bs).
+:/- phrase(einfachschleife_("TTAGCG","AAA"), Bs), false.
+:- phrase(einfachschleife_("TTAGCG","AAA"), "TTAGCGAAACGCTAA").
+:/- phrase(einfachschleife_("TTAGCG","AAA"), "TTAGCGAAACGCTAA"), false.
+
+einfachschleife_(Bindung, Knick) -->
+	{Bindung = [_,_,_|_]},
+	{Knick = [_,_,_|_]},
+	seq(Bindung),
+	seq(Knick),
+	komplseq(Bindung).
+```
+
+## Bsp 51
+
+```
+:- rnafaltung(F) <<< ist_faltung(F).
+:- rnafaltung(F) <<< F=[_,_|_], ist_faltung(F).
+:- rnafaltung(F) <<< F=[_,_,_,_|_], ist_faltung(F).
+:- rnafaltung(F) <<< F=[_,_,_,B|_], B=bindung("CCC",[_,_,_,_|_], ist_faltung(F).
+```
+
+## Bsp 52
+
+```
+substr_einfachfaltung([frei(As),bindung(Bindung, [frei(Knick)]), frei(Bs)]) -->
+	seq(As),
+	einfachschleife_(Bindung, Knick),
+	seq(Bs).
+```
+
+## Bsp 53
+
+X soll größer gleich 0 sein
+
+`:- X #>= 0.`
+
+X soll größer gleich 0 und kleiner 9 sein
+
+`:- X #>= 0, X #< 9.`
+
+Der Rest erklärt sich dann mittlerweile von selbst
+
+```
+:- X #>= 0, X #< 9, X mod 2 #= 1.
+:- X #>= 0, X #< 9, X mod 2 #= 1, X #>= 6.
+:/- X #>= 0, X #< 9, X mod 2 #= 1, X #= 10.
+```
+
+Geforderte Punkte a-f:
+
+```
+:- X #= 1+1.
+
+:- X+Y #= 2.
+
+:- X+X #= 2.
+```
+
+Wenn man nicht einschränkt, dass die Anzahl der Hasen und Fasane >=0 sind, gibt es unendlich viele Lösungen:
+
+```
+:- F*2+H*4 #= 24, F+H #= 9.
+:- F*2+H*4 #= 24, F+H #= 9, F #>= 0.
+:- F*2+H*4 #= 24, F+H #= 9, H #>= 0.
+:- F*2+H*4 #= 24, F+H #= 9, F #>= 0, H #>= 0.
+
+:- X+Y #= 2, X+Y #= 3.
+:- Fs = [A,B,C], Fs ins 0..1, A #\= B, A #\= C, B #\= C.
+:/- Fs = [A,B,C], Fs ins 0..1, A #\= B, A #\= C, B #\= C, labeling_zs([], Fs).
+```
+
+Verschiedene Lösungsmengen obwohl es gleich aussieht..
+
+```
+:- X in 0..2.
+:- X in 0..2, dif(X,1).
+:- X in 0..2, X #\= 1.
+```
+
+## Bsp 54
+
+```
+:- keinelement_vonzs(X, Zs).
+:/- keinelement_vonzs(X, Zs), false.
+
+:- Zs = [_,_,_], keinelement_vonzs(X, Zs).
+:- Zs = [4711,4711,4711], X=4712, keinelement_vonzs(X, Zs).
+:/- Zs = [4712,4711,4711], X=4712, keinelement_vonzs(X, Zs).
+:/- Zs = [4712|_], X=4712, keinelement_vonzs(X, Zs).
+
+keinelement_vonzs(_X, []).
+keinelement_vonzs(X, [Z|Zs]) :-
+	X #\= Z,
+	keinelement_vonzs(X, Zs).
+
+:- zalleunterschiedlich(Zs).
+:/-& zalleunterschiedlich(Zs), false.
+:- Zs = [_,_,_,_], zalleunterschiedlich(Zs).
+
+zalleunterschiedlich([]).
+zalleunterschiedlich([Z|Zs]) :-
+	keinelement_vonzs(Z, Zs),
+	zalleunterschiedlich(Zs).
+
+:- Zs = [_,_,_], Zs ins 0..1, zalleunterschiedlich(Zs). & Scheinlösung
+```
+
+```
+:- Zs=[X|_], keinelement_vonzs(Zs,X). %Scheinlösung im Bezug auf Beispiel oben
+
+:- X #>= 0, labeling_zs([], [X]). % Weigert sich, da unendlicher Wertebereich
+```
+
+## Bsp 55
+
+```
+buchstabe_wert('I',1).
+buchstabe_wert('V',5).
+buchstabe_wert('U',5).
+buchstabe_wert('X',10).
+buchstabe_wert('L',50).
+buchstabe_wert('C',100).
+buchstabe_wert('D',500).
+buchstabe_wert('M',1000).
+buchstabe_wert(Bs, 0) :-
+	keinelement_von(Bs, "IVUXLCDM").
+
+chronogramm_jahr([],0).
+chronogramm_jahr([B|Bs], J) :-
+	J #>= 0,
+	buchstabe_wert(B, W),
+	J #= J1+W,
+	chronogramm_jahr(Bs, J1).
+%Oder
+chronogramm_jahr([B|Bs], J) :-
+	buchstabe_wert(B, W),
+	J #= J1+W,
+	J1 #>= 0,
+	chronogramm_jahr(Bs, J1).
+```
+
+## Bsp 56
+
+```
+:- hrätsel(Xs).
+:/- hrätsel(Xs), false.
+
+%  X1      X5
+%  |       |
+%  X2--X4--X6
+%  |       |
+%  X3      X7
+
+:- hrätsel_(Xs, Zs).
+:/-$ hrätsel_(Xs, Zs), false.
+
+hrätsel(Xs) :-
+	hrätsel_(Xs, Zs),
+	labeling_zs([], Zs).
+
+hrätsel_(Xs, Zs) :-
+	Xs = [X1,X2,X3,X4,X5,X6,X7],
+	Zs = [X1,X2,X3,X4,X5,X6,X7],
+	Xs ins 1..7,
+	zalleunterschiedlich(Xs),
+	X1+X2+X3 #= S,
+	X2+X4+X6 #= S,
+	X5+X6+X7 #= S.
+```
