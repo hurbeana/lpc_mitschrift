@@ -1008,6 +1008,67 @@ zahlenpaar(paar(X,Y)) :-
 
 # 10.04.2019
 
+# Bsp 47
+
+Hierbei handelt es sich bei diesem Beispiel um eine eigene Lösung und nicht um die Mitschrift aus der VO. Alle Angaben ohne Gewähr.
+
+```
+:- geladen(^^40).
+
+:- phrase(eingerückteexpr(Expr), E).
+:/-& phrase(eingerückteexpr(Expr), E), false.
+
+:- Expr = knoten(+,A), phrase(eingerückteexpr(Expr), E).
+:/-& Expr = knoten(+,A), phrase(eingerückteexpr(Expr), E), false.
+:- Expr = knoten(A,[]), phrase(eingerückteexpr(Expr), E).
+:/- Expr = knoten(A,[]), phrase(eingerückteexpr(Expr), E), false.
+
+:- phrase(eingerückteexpr(knoten(1,[])),"1").
+:/- Text = "(1+1)",  text_eingerückt(Text,Text).
+:- text(LayoutText) <<< Text = "(1+1)", dif(Text,LayoutText), text_eingerückt(Text,LayoutText).
+:- text(LayoutText) <<< list_length(Text,N), text_eingerückt(Text,LayoutText).
+:- text(LayoutText) <<< text_eingerückt("((1+1)+(1+1))", LayoutText).
+
+text_eingrückt(Text,Eingrückt) :-
+	phrase(expr(Expr), Text),
+	phrase(eingrückteexpr(Expr), Eingrückt).
+
+eingerückteexpr(E) -->
+  eingerückteexprHelper(K, 0).
+
+:- phrase(eingerückteexprHelper(K, E), Text).
+:/-& phrase(eingerückteexprHelper(K, E), Text), false.
+
+eingerückteexprHelper(knoten(1,[]), E) -->
+  einrückung(E),
+  "1".
+eingerückteexprHelper(knoten(+,[A,B]), E) -->
+  einrückung(E),
+  "(",
+  zeilenumbruch,
+  einrückung(E),
+  eingerückteexprHelper(A, s(E)),
+  zeilenumbruch,
+  einrückung(E),
+  eingerückteexprHelper(B, s(E)),
+  zeilenumbruch,
+  einrückung(E),
+  ")".
+
+:- phrase(zeilenumbruch, Layout).
+:/- phrase(zeilenumbruch, Layout), false.
+zeilenumbruch -->
+  "\n".
+
+:- phrase(einrückung(Ein), E).
+:/-& phrase(einrückung(Ein), E), false.
+einrückung(0) -->
+  [].
+einrückung(s(A)) -->
+  einrückung(A),
+  " ".
+
+```
 Dadurch, dass mit 53-56 begonnen wurde und 48-52 am Ende kam, sind 51&52 relativ kurz.
 
 ## Bsp 48
