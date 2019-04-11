@@ -1137,9 +1137,9 @@ tandemrepeat(Xs) -->
 :/- phrase(substr_tandemrepeat("ACT"), ['G','G'|_]), false.
 
 substr_tandemrepeat(Xs) -->
-	...,
+	seq(_),
 	tandemrepeat(Xs),
-	... .
+	seq(_).
 
 :- Xs=Xs, genom(G), phrase(substr_tandemrepeat(Xs), G).
 :- Xs=[_,_,_,_,_,_], genom(G), phrase(substr_tandemrepeat(Xs),G).
