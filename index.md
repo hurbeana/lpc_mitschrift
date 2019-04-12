@@ -3,12 +3,12 @@
 - [Table of Contents](#table-of-contents)
 - [13.03.19](#130319)
 	- [Bsp 8](#bsp-8)
+	- [Bsp 11](#bsp-11)
+	- [Bsp 12](#bsp-12)
 	- [Bsp 13](#bsp-13)
-		- [de_en](#de_en)
-		- [bin_text](#bin_text)
-		- [staat_org](#staat_org)
 	- [Bsp 14](#bsp-14)
 	- [Bsp 15](#bsp-15)
+	- [Bsp 16](#bsp-16)
 	- [Bsp 17](#bsp-17)
 	- [Bsp 18](#bsp-18)
 	- [Bsp 19](#bsp-19)
@@ -24,14 +24,15 @@
 	- [Bsp 28](#bsp-28)
 	- [Bsp 29](#bsp-29)
 - [27.03.19](#270319)
-	- [Beispiel 29](#beispiel-29)
-	- [Beispiel 30](#beispiel-30)
-	- [Beispiel 31](#beispiel-31)
-	- [Beispiel 32](#beispiel-32)
-	- [Beispiel 33](#beispiel-33)
-	- [Beispiel 36](#beispiel-36)
-	- [Beispiel 37](#beispiel-37)
-- [03.04.2019](#03042019)
+	- [Bsp 30](#bsp-30)
+	- [Bsp 31](#bsp-31)
+	- [Bsp 32](#bsp-32)
+	- [Bsp 33](#bsp-33)
+	- [Bsp 34](#bsp-34)
+	- [Bsp 35](#bsp-35)
+	- [Bsp 36](#bsp-36)
+	- [Bsp 37](#bsp-37)
+- [03.04.19](#030419)
 	- [Bsp 39](#bsp-39)
 	- [Bsp 40](#bsp-40)
 	- [Bsp 41](#bsp-41)
@@ -40,8 +41,8 @@
 	- [Bsp 44](#bsp-44)
 	- [Bsp 45](#bsp-45)
 	- [Bsp 46](#bsp-46)
-- [10.04.2019](#10042019)
-- [Bsp 47](#bsp-47)
+- [10.04.19](#100419)
+	- [Bsp 47](#bsp-47)
 	- [Bsp 48](#bsp-48)
 	- [Bsp 49](#bsp-49)
 	- [Bsp 50](#bsp-50)
@@ -57,6 +58,15 @@
 
 ## Bsp 8
 ```
+:- bruder_von(B,P).
+:/- bruder_von(B,B).
+
+:- weiblich(B), bruder_von(B,P).
+:/- weiblich(B), männlich(B).
+
+:- bruder_von(marie_antoinette,marie_antoinette).
+%(Error) Weil zu speziell, nur dif(B,P) bleibt übrig, nochmal space, männlich
+
 bruder_von(B,P) :-
 	kind_von(B,E),
 	kind_von(P,E),
@@ -70,9 +80,44 @@ bruder_von(B,P) :-
 
 Wie wird ein fehlerhaftes Faktum lokalisiert -> Es findet sich eine Lösung bei einer negativen Zusicherung
 
+## Bsp 11
+```
+:-kind_vonvater_vonmutter(K,V,M).
+:/-kind_vonvater_vonmutter(K,V,K).
+:/-kind_vonvater_vonmutter(K,K,M).
+
+kind_vonvater_vonmutter(K,V,M) :-
+	kind_von(K,V),
+	männlich(V),
+	kind_von(K,M),
+	weiblich(M).
+```
+
+## Bsp 12
+```
+:- kind_von(K,E),kind_von2(K,E).
+kind_von2 ist teilmenge
+	
+kind_von2(K,E) :-
+	kind_vonvater_vonmutter(K,E,_).
+kind_von2(K,E) :-
+	kind_vonvater_vonmutter(K,_,E).
+```
 ## Bsp 13
 
-### de_en
+*deutsch_englich*
+```
+deutsch_english(handy,cellphone).
+deutsch_english(mobiltelefon,cellphone).
+deutsch_english(handlich,handy).
+deutsch_english(baby,baby).
+:-deutsch_english(handy,E).
+:-deutsch_english(D,cellphone).
+:-deutsch_english(D,E).
+:-deutsch_english(D,D).
+```
+oder
+*de_en*
 ```
 :- de_en(D,E).
 de_en('Hallo', 'Hello').
@@ -80,10 +125,7 @@ de_en(handy,mobile_phone).
 de_en(praktisch,handy).
 ```
 
-### bin_text
-bin_text
-
-### staat_org
+*staat_org*
 ```
 -> staat_org
    staat_gehört_zu
@@ -102,6 +144,15 @@ funktion_variable_ableitung
 text_binärcode
 ```
 
+Code aus alter Mitschrift (Vowi)
+```
+argumentreihenfolge
+größer_kleiner(G,K).
+add = zahl_zahl_zahl(X,Z,SUMME).
+computesum([])... zahlenliste_summe
+sortiere -> zahlenliste_aufsteigend
+```
+
 ## Bsp 15
 
 ```
@@ -118,6 +169,12 @@ text_binärcode
 ```
 :- f(A,B)=f(C,D).
 :- X=Y,X=f(A,B),Y=f(C,D).
+```
+
+## Bsp 16
+```
+:- U = g(a), U=g(b).
+:-f(g(W),U) = f(V,g(a)).
 ```
 
 ## Bsp 17
@@ -206,7 +263,10 @@ nat_nat_summe(E,X,X).
 ```
 :- würfel(W).
 :- W = w(1,1,1), würfel(W).
-:/- würfel(W, false.
+:- W = w(1,2,3), würfel(W).
+:- W = w(1,4,2), würfel(W).
+:- W = w(_,4,_), würfel(W).
+:/- würfel(W, false).
 :/- würfel(w(1,4,2)).
 :/- würfel(w(_,4_,_)).
 
@@ -261,9 +321,8 @@ holzart(3).
 ## Bsp 24
 
 ```
-%I hope it's correct
 liste([]).
-liste(_X|Xs) :-
+liste([_X|Xs]) :-
   liste(Xs).
 
 :- parkettspalte(Ws) <<< liste(Ws), würfelliste(Ws).
@@ -402,21 +461,17 @@ keinelement_von(X,[E|Es]) :-
 
 ## Bsp 29
 
-```
-%2., 3., 4. & 7. sind Endlosableitung -> jeweils ein '&' zum Pfeil
+2., 3., 4. & 7. sind Endlosableitung -> jeweils ein '&' zum Pfeil
 
-%beim 2. Block überall A-F generieren und dann untersuchen, was sie produzieren
-```
-
-# 27.03.19
-
-## Beispiel 29
+Beim 2. Block überall A-F generieren und dann untersuchen, was sie produzieren
 
 Das Faktum hat keinen Einfluss auf Termination (und wird deswegen rausgestrichen).
 Erste Variante und Variante A unterscheiden sich nicht.
-Finden von Lösungen =/= Termination.
+Finden von Lösungen `=/=` Termination.
 
-## Beispiel 30
+# 27.03.19
+
+## Bsp 30
 
 ```
 :- nat_nat_nat_summe(A,B,C,D).
@@ -456,11 +511,11 @@ nat_nat_nat_summe(A,B,C,D) :-
 @@ % D = s(BC).
 ```
 
-## Beispiel 31
+## Bsp 31
 (Hier geht es nur darum zu erinnern, dass es eine Referenzimplementierung gibt, mehr hat er nicht dazu gesagt)
 Fragen an die Referenzimplementierung stellen
 
-## Beispiel 32
+## Bsp 32
 
 ```
 :- liste_gleichlang(Xs, Ys).
@@ -621,7 +676,7 @@ parkettfläche(Parkett) :-
 :- Parkett = [_,_,_,_,_,_], ous_abwechselnd(Parkett), ous_quadrat(Parkett). % Eine Lösung
 ```
 
-## Beispiel 33
+## Bsp 33
 
 ```
 :- zugweg_nach(Städte, Nach).
@@ -638,6 +693,29 @@ parkettfläche(Parkett) :-
 :/- dif(S,N), zugweg_nach([S], N).
 
 :- streckevon_nach([szczecin], szczecin).
+
+% Zusätzliche Zusicherungen (nicht nötig)
+:- Städte = [_,_,_|_], zugweg_nach(Städte,Nach).
+:- Städte = [_,_,_,_,_,_|_], zugweg_nach(Städte,Nach).
+:- Städte = [endinburg,aberdeen,edinburg], zugweg_nach(Städte,Nach).
+
+:/- Städte = [aberdeen], Nach=edinburg, zugweg_nach(Städte,Nach).
+:/- Städte = [], zugweg_nach(Städte,Nach).
+
+:- Städte = [_,_,_], zugweg_nach(Städte,Nach).
+:/- Städte = [_,_,_], zugweg_nach(Städte,Nach),false.
+
+:- Städte = [_,_,_,_,_,_,_], zugweg_nach(Städte,Nach).
+:/-$ Städte = [_,_,_,_,_,_,_], zugweg_nach(Städte,Nach),false.
+
+
+:- Städte = [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_], zugweg_nach(Städte,Nach).
+:/-$ Städte = [_,_,_,_,_,_,_,_,_,_,_,_,_,_,_], zugweg_nach(Städte,Nach),false.
+%Zu groß
+
+
+:/- Städte = [V0,V0|_],zugweg_nach(Städte,Nach).
+:/- Städte = [x,edinburg], Nach= edinburg, zugweg_nach(Städte,Nach).
 
 zugweg_nach([S], S) :-
 	stadt(S).
@@ -658,7 +736,11 @@ regzugweg_nach([S1|Städte], Nach) :-
 	Städte = [S2|_],
 	regstreckevon_nach(S1, S2),
 	regzugweg_nach(Städte, Nach).
+```
 
+## Bsp 34
+
+```
 :- regzugwegzyklenfrei_nach(Weg, Nach).
 :/-& regzugwegzyklenfrei_nach(Weg, Nach), false. % Sollte jetzt terminieren können, weil keine Zyklen mehr sind
 
@@ -668,6 +750,11 @@ regzugwegzyklenfrei_nach(Weg, Nach) :-  % Sollte ja eigentlich terminieren, aber
 
 :- alleunterschiedlich(Weg). % Schauen ob alle Lösungen fair aufgezählt werden. Ja werden sie.
 
+```
+
+## Bsp 35
+
+```
 :- regzugweg_nach_außer(Weg, Nach, Außer).
 :/-& regzugweg_nach_außer(Weg, Nach, Außer), false.
 :- regzugweg_nach_außer(Weg, Nach, []).
@@ -689,7 +776,7 @@ regzugweg_nach_außer([S1|Städte], Nach, Außer) :-
 	regstreckevon_nach_außer(Städte, Nach, Außer).
 ```
 
-## Beispiel 36
+## Bsp 36
 
 ```
 :- regzugwegzyklenfrei_nach2(Weg, Nach).
@@ -710,7 +797,7 @@ regzugwegzyklenfrei_nach2_außer([S1|Städte], Nach, Außer) :-
 %	keinelement_von(S1, Städte).
 ```
 
-## Beispiel 37
+## Bsp 37
 
 Erstes Argument ist das NichtTerminal und zweites ist die freie Variable.
 
@@ -770,7 +857,7 @@ reim -->
     " und Preiß".
 ```
 
-# 03.04.2019
+# 03.04.19
 
 ## Bsp 39
 
@@ -797,11 +884,7 @@ reim -->
 
 :- dif(A,B), phrase(expr,[A,B|_]).
 :/-& dif(A,B), phrase(expr,[A,B|_]), false.
-```
 
-Definition
-
-```
 expr -->
 	"1".
 expr -->
@@ -939,9 +1022,7 @@ seq([]) -->
 seq([E|Es]) -->
 	[E],
 	seq[Es].
-```
 
-```
 :- phrase(invseq(Cs),Es).
 :/-& phrase(invseq(Cs),Es), false.
 
@@ -954,9 +1035,6 @@ invseq([E|Es]) -->
 	invseq(Es),
 	[E].
 
-```
-
-```
 :- invseq2(Xs,Ys).
 
 invseq2p(Xs, Ys) :-
@@ -967,9 +1045,7 @@ invseq2([], _) -->
 invseq2([E|Es], [_|L]) -->
 	invseq(Es, L),
 	[E].
-```
 
-```
 :- phrase(palindrom, Xs).
 :/-& phrase(palindrom, Xs), false.
 
@@ -1061,9 +1137,9 @@ zahlenpaar(paar(X,Y)) :-
 	natürlichezahlsx(Y).
 ```
 
-# 10.04.2019
+# 10.04.19
 
-# Bsp 47
+## Bsp 47
 
 Hierbei handelt es sich bei diesem Beispiel um eine eigene Lösung und nicht um die Mitschrift aus der VO. Alle Angaben ohne Gewähr.
 
@@ -1401,4 +1477,7 @@ hrätsel_(Xs, Zs) :-
 	X1+X2+X3 #= S,
 	X2+X4+X6 #= S,
 	X5+X6+X7 #= S.
+
+Xs = [A,B,C], Xs ins 1..3.
+Xs = [A,B,C], Xs ins 1..3, keineelement_vonzs(2,Xs).
 ```
