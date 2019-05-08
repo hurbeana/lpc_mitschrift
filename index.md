@@ -52,6 +52,15 @@
 	- [Bsp 54](#bsp-54)
 	- [Bsp 55](#bsp-55)
 	- [Bsp 56](#bsp-56)
+- [08.05.19](#080519)
+	- [Bsp 57](#bsp-57)
+	- [Bsp 58](#bsp-58)
+	- [Bsp 59](#bsp-59)
+	- [Bsp 60](#bsp-60)
+	- [Bsp 61](#bsp-61)
+	- [Bsp 62](#bsp-62)
+	- [Bsp 63](#bsp-63)
+	- [Bsp 64](#bsp-64)
 
 
 # 13.03.19
@@ -1327,7 +1336,7 @@ einfachschleife_(Bindung, Knick) -->
 :- rnafaltung(F) <<< ist_faltung(F).
 :- rnafaltung(F) <<< F=[_,_|_], ist_faltung(F).
 :- rnafaltung(F) <<< F=[_,_,_,_|_], ist_faltung(F).
-:- rnafaltung(F) <<< F=[_,_,_,B|_], B=bindung("CCC",[_,_,_,_|_], ist_faltung(F).
+:- rnafaltung(F) <<< F=[_,_,_,B|_], B=bindung("CCC",[_,_,_,_|_], ist_faltung(F)).
 ```
 
 ## Bsp 52
@@ -1481,3 +1490,30 @@ hrätsel_(Xs, Zs) :-
 Xs = [A,B,C], Xs ins 1..3.
 Xs = [A,B,C], Xs ins 1..3, keineelement_vonzs(2,Xs).
 ```
+
+# 08.05.19
+
+... kommt bald ...
+
+## Bsp 57
+
+
+## Bsp 58
+
+
+## Bsp 59
+
+
+## Bsp 60
+
+
+## Bsp 61
+
+
+## Bsp 62
+
+
+## Bsp 63
+
+
+## Bsp 64
