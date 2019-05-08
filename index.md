@@ -58,9 +58,8 @@
 	- [Bsp 59](#bsp-59)
 	- [Bsp 60](#bsp-60)
 	- [Bsp 61](#bsp-61)
-	- [Bsp 62](#bsp-62)
-	- [Bsp 63](#bsp-63)
-	- [Bsp 64](#bsp-64)
+	- [Bsp 62-68](#bsp-62---68)
+	- [Bsp 69](#bsp-64)
 
 
 # 13.03.19
@@ -1491,29 +1490,244 @@ Xs = [A,B,C], Xs ins 1..3.
 Xs = [A,B,C], Xs ins 1..3, keineelement_vonzs(2,Xs).
 ```
 
-# 08.05.19
-
-... kommt bald ...
-
 ## Bsp 57
 
+# 08.05.19
 
 ## Bsp 58
 
+Durch verneinen der vorgegebenen Kette ("CCCTTGTCGAT..") eine Lösung von der Referenzimplementierung geben lassen
+
+Erkenntnisse: `bindung("CGA", [frei("TGG")])` ist erlaub, hingegen `bindung("CG", [frei("TGG")])` aber nicht, weil Bindung mindestens 3 Zeichen haben muss
+
+```
+%Einrückung nur wegen der Übersicht
+
+tRNA(Descr) -->
+	{Descr = [frei(F1), bindung(B1, Faltung), frei(F9)]},
+	{Faltung = [frei(F2), bindung(B2, [frei(F3])], frei(F4), bindung(B3, [frei(F5)]), frei(F6), bindung(B4, [frei(F7)]), frei(F8)},
+	{B1 = [_,_,_|_]},
+	{B2 = [_,_,_|_]},
+	{B3 = [_,_,_|_]},
+	{B4 = [_,_,_|_]},
+	{F3 = [_,_,_|_]},
+	{F5 = [_,_,_,_,_|_]},
+	{F7 = [_,_,_|_]},
+	{Inner = [_,_,_,_,_, _,_,_,_,_, _,_,_,_,_, _,_,_,_,_, _,_,_,_,_, _,_,_,_|_]}, %Inner muss mindestens 29 Zeichen haben
+	seq(F1),
+	seq(B1),
+	seq(Inner),
+	komplseq(B1),
+	{inner(F2,F3,F4,F5,F6,F7,F8,B2,B3,B4)},
+	seq(F9).
+
+inner(F2,F3,F4,F5,F6,F7,F8,B2,B3,B4) -->
+	seq(F2),
+	seq(B2),
+		seq(F3),
+	komplseq(B2),
+	seq(F4),
+	seq(B3),
+		seq(F5), %Anticodon
+	komplseq(B3),
+	seq(F6),
+	seq(B4),
+		seq(F7),
+	komplseq(B4),
+	seq(F8),
+```
+
+Damit die vorgegebene Lösung (und die Verneinung) ohne $ funktionieren, war eine Korrektur bei komplseq notwendig, wo die Zeile in den geschwungenen Klammern in die mittlere Zeile verschoben wurde.
+
+```
+komplseq([B|Bs]) -->
+	komplseq(Bs),
+	{base_kompl(B,C)},
+	[C].
+```
 
 ## Bsp 59
 
+Constraints (Kernsuche) -> kostet nichts ; kann prüfen, ob es überhaupt Lösungen gibt
+Labeling (Tatsächliche Wertsuche) -> liefert Ergebnisse, kann aber auch sehr lang brauchen
+
+```
+:- magischesquadrat3(M).
+:/- magischesquadrat3(M), false.
+
+:- magquad(M) <<< magischesquadrat3(M).
+
+:- magischesquadrat3_(M, Zs).
+:/- magischesquadrat3_(M, Zs), false.
+
+:/- M = [[1,2,_],_,_], magischesquadrat3_(M, Zs).
+:- M = [[1,_,_],_,_], magischesquadrat3_(M, Zs). % Scheinlösung (nur vor der 1. Optimierung)
+:/- M = [[1,_,_],_,_], magischesquadrat3_(M, Zs), labeling_zs([], Zs).
+:- M = [[1,3,_],_,_], magischesquadrat3_(M, Zs). % Scheinlösung (nur vor der 1. Optimierung)
+:/- M = [[1,3,_],_,_], magischesquadrat3_(M, Zs), labeling_zs([], Zs).
+
+magischesquadrat3(M) :-
+	magischesquadrat3_(M, Zs),
+	labeling_zs([], Zs).
+
+magischesquadrat3_(M, Zs) :-
+	M = [[A1, A2, A3], [B1, B2, B3], [C1, C2, C3]],
+	Zs = [A1, A2, A3, B1, B2, B3, C1, C2, C3],
+	Es = [A1, A2, A3, B1, B2, B3, C1, C2, C3],
+	Es ins 1..9,
+	zalleunterschiedlich(Es),
+	A1 mod 2 #= 0, % Optimierung 3
+	A3 mod 2 #= 0, % Optimierung 3
+	C1 mod 2 #= 0, % Optimierung 3
+	C3 mod 2 #= 0, % Optimierung 3
+	S #= 15, % Optimierung 1
+	B2 #= 5, % Optimierung 2
+	A1+A2+A3 #= S,
+	B1+B2+B3 #= S,
+	C1+C2+C3 #= S,
+	A1+B1+C1 #= S,
+	A2+B2+C2 #= S,
+	A3+B3+C2 #= S,
+	A1+B2+C3 #= S,
+	A3+B2+C1 #= S.
+```
+
+Lösungen künstlich länger gestalten, um die Laufzeit zu messen: (wird bei der Zeit automatisch wieder weggerechnet)
+
+```
+:/-$ exptrue(10^1), magischesquadrat3(M).
+:/-$ exptrue(10^2), magischesquadrat3(M).
+:/-$ exptrue(10^3), magischesquadrat3(M).
+```
 
 ## Bsp 60
 
+```
+:- magischesquadrat3nred(M).
+:/- magischesquadrat3nred(M), false.
+:- magischesquadrat3nred_(M, Zs).
+:/- magischesquadrat3nred_(M, Zs), false.
+
+:- exptrue(10^3), magischesquadrat3nred(M).
+
+magischesquadrat3nred_(M, Zs) :-
+	magischesquadrat3_(M, Zs), %Kernrelation verwenden, um auch hier das labeling auszulagern
+	M = [[A1,_,A3],_,[C1,_,C3]],
+	A1 #< A3,
+	A1 #< C1,
+	A1 #< C3,
+	C1 #< A3.
+```
 
 ## Bsp 61
 
+```
+:- liste_aufsteigend(Xs, Ys).
+:/-& liste_aufsteigend(Xs, Ys), false.
 
-## Bsp 62
+:- liste_aufsteigend([3,2,1], [1,2,3]).
+:/- liste_aufsteigend([3,2,1,1], [1,2,3]).
+:/- liste_aufsteigend([_,_,_,_], [_,_,_]).
+:- liste_aufsteigend([3,2,1,1], [1,1,2,3]).
 
+:- L = [_,_,_], liste_aufsteigend(L, K).
+:/- L = [_,_,_], liste_aufsteigend(L, K), false.
+:- K = [_,_,_], liste_aufsteigend(L, K).
+:/- K = [_,_,_], liste_aufsteigend(L, K), false.
 
-## Bsp 63
+liste_aufsteigend(L, Ls) :-
+	phrase(aufsteigend(L), Ls).
 
+aufsteigend([]) -->
+	[].
+aufsteigend(_) -->
+	{es_x_klgls_grs(Xs, X, KlGls, Grs)},
+	aufsteigend(KlGls),
+	[X],
+	aufsteigend(Grs).
 
-## Bsp 64
+es_x_klgls_grs([], _, [], []).
+es_x_klgls_grs([E|Es], X, [E|KlGls], Grs) :-
+	E #=< X,
+	es_x_klgls_grs(Es, E, KlGls, Grs).
+es_x_klgls_grs([E|Es], X, KlGls, [E|Grs]) :-
+	E #> X,
+	es_x_klgls_grs(Es, E, KlGls, Grs).
+```
+
+## Bsp 62 - 68
+
+Ist am 08.05.2019 nicht behandelt worden ¯\_(ツ)_/¯
+
+also ...
+
+──────█▀▄─▄▀▄─▀█▀─█─█─▀─█▀▄─▄▀▀▀─────
+──────█─█─█─█──█──█▀█─█─█─█─█─▀█─────
+──────▀─▀──▀───▀──▀─▀─▀─▀─▀──▀▀──────
+─────────────────────────────────────
+───────────────▀█▀─▄▀▄───────────────
+────────────────█──█─█───────────────
+────────────────▀───▀────────────────
+─────────────────────────────────────
+───█▀▀─█▀▀─█▀▀───█──█─█▀▀─█▀▀█─█▀▀───
+───▀▀█─█▀▀─█▀▀───█▀▀█─█▀▀─█▄▄▀─█▀▀───
+───▀▀▀─▀▀▀─▀▀▀───▀──▀─▀▀▀─▀─▀▀─▀▀▀───
+─────────────────────────────────────
+─────────▄███████████▄▄──────────────
+──────▄██▀──────────▀▀██▄────────────
+────▄█▀────────────────▀██───────────
+──▄█▀────────────────────▀█▄─────────
+─█▀──██──────────────██───▀██────────
+█▀──────────────────────────██───────
+█──███████████████████───────█───────
+█────────────────────────────█───────
+█────────────────────────────█───────
+█────────────────────────────█───────
+█────────────────────────────█───────
+█────────────────────────────█───────
+█▄───────────────────────────█───────
+▀█▄─────────────────────────██───────
+─▀█▄───────────────────────██────────
+──▀█▄────────────────────▄█▀─────────
+───▀█▄──────────────────██───────────
+─────▀█▄──────────────▄█▀────────────
+───────▀█▄▄▄──────▄▄▄███████▄▄───────
+────────███████████████───▀██████▄───
+─────▄███▀▀────────▀███▄──────█─███──
+───▄███▄─────▄▄▄▄────███────▄▄████▀──
+─▄███▓▓█─────█▓▓█───████████████▀────
+─▀▀██▀▀▀▀▀▀▀▀▀▀███████████────█──────
+────█─▄▄▄▄▄▄▄▄█▀█▓▓─────██────█──────
+────█─█───────█─█─▓▓────██────█──────
+────█▄█───────█▄█──▓▓▓▓▓███▄▄▄█──────
+────────────────────────██──────────
+────────────────────────██───▄███▄───
+────────────────────────██─▄██▓▓▓██──
+───────────────▄██████████─█▓▓▓█▓▓██▄
+─────────────▄██▀───▀▀███──█▓▓▓██▓▓▓█
+─▄███████▄──███───▄▄████───██▓▓████▓█
+▄██▀──▀▀█████████████▀▀─────██▓▓▓▓███
+██▀─────────██──────────────██▓██▓███
+██──────────███──────────────█████─██
+██───────────███──────────────█─██──█
+██────────────██─────────────────█───
+██─────────────██────────────────────
+██─────────────███───────────────────
+██──────────────███▄▄────────────────
+███──────────────▀▀███───────────────
+─███─────────────────────────────────
+──███────────────────────────────────
+
+## Bsp 69
+
+```
+:- damen_brettgröße_(Ds, 8, Zs), labeling_zs([], Zs).
+:- nqueens(Ds) <<< damen_brettgröße_(Ds, 8, Zs), labeling_zs([], Zs).
+:-$ nqueens(Ds) <<< damen_brettgröße_(Ds, 40, Zs), labeling_zs([], Zs).
+:-$ nqueens(Ds) <<< damen_brettgröße_(Ds, 20, Zs), labeling_zs([ff], Zs). %ff = first failure
+:-$ nqueens(Ds) <<< damen_brettgröße_(Ds, 40, Zs), labeling_zs([], Zs).
+:-$ nqueens(Ds) <<< damen_brettgröße_(Ds, 40, Zs), labeling_zs([ff], Zs). %findet mit ff sofort eine Lösung, ohne ff (mit klassischer Tiefensuche) kann man lange warten
+:-$ nqueens(Ds) <<< damen_brettgröße_(Ds, 120, Zs), labeling_zs([ff], Zs).
+
+:-$ nqueens(Ds) <<< damen_brettgröße_(Ds, 120, Zs), queenslabeling(Zs). %Gibt die dazugehörigen Sachen für queenslabeling verlinkt | seq und iseq (invseq) haben wir bereits selbst gemacht, den Rest muss man kopieren
+```
