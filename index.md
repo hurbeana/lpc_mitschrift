@@ -1529,7 +1529,7 @@ Erkenntnisse: `bindung("CGA", [frei("TGG")])` ist erlaub, hingegen `bindung("CG"
 
 tRNA(Descr) -->
 	{Descr = [frei(F1), bindung(B1, Faltung), frei(F9)]},
-	{Faltung = [frei(F2), bindung(B2, [frei(F3])], frei(F4), bindung(B3, [frei(F5)]), frei(F6), bindung(B4, [frei(F7)]), frei(F8)},
+	{Faltung = [frei(F2), bindung(B2, [frei(F3)]), frei(F4), bindung(B3, [frei(F5)]), frei(F6), bindung(B4, [frei(F7)]), frei(F8)]},
 	{B1 = [_,_,_|_]},
 	{B2 = [_,_,_|_]},
 	{B3 = [_,_,_|_]},
@@ -1542,7 +1542,7 @@ tRNA(Descr) -->
 	seq(B1),
 	seq(Inner),
 	komplseq(B1),
-	{inner(F2,F3,F4,F5,F6,F7,F8,B2,B3,B4)},
+	{Inner = inner(F2,F3,F4,F5,F6,F7,F8,B2,B3,B4)},
 	seq(F9).
 
 inner(F2,F3,F4,F5,F6,F7,F8,B2,B3,B4) -->
