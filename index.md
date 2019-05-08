@@ -58,7 +58,7 @@
 	- [Bsp 60](#bsp-60)
 	- [Bsp 61](#bsp-61)
 	- [Bsp 62-68](#bsp-62---68)
-	- [Bsp 69 (nur Anfragen)](#bsp-64-(nur-Anfragen))
+	- [Bsp 69 (nur Anfragen)](#bsp-69-nur-anfragen)
 
 
 # 13.03.19
