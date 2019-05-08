@@ -53,13 +53,12 @@
 	- [Bsp 55](#bsp-55)
 	- [Bsp 56](#bsp-56)
 - [08.05.19](#080519)
-	- [Bsp 57](#bsp-57)
 	- [Bsp 58](#bsp-58)
 	- [Bsp 59](#bsp-59)
 	- [Bsp 60](#bsp-60)
 	- [Bsp 61](#bsp-61)
 	- [Bsp 62-68](#bsp-62---68)
-	- [Bsp 69](#bsp-64)
+	- [Bsp 69 (nur Anfragen)](#bsp-64-(nur-Anfragen))
 
 
 # 13.03.19
@@ -1490,8 +1489,6 @@ Xs = [A,B,C], Xs ins 1..3.
 Xs = [A,B,C], Xs ins 1..3, keineelement_vonzs(2,Xs).
 ```
 
-## Bsp 57
-
 # 08.05.19
 
 ## Bsp 58
@@ -1549,6 +1546,7 @@ komplseq([B|Bs]) -->
 ## Bsp 59
 
 Constraints (Kernsuche) -> kostet nichts ; kann prüfen, ob es überhaupt Lösungen gibt
+
 Labeling (Tatsächliche Wertsuche) -> liefert Ergebnisse, kann aber auch sehr lang brauchen
 
 ```
@@ -1592,7 +1590,7 @@ magischesquadrat3_(M, Zs) :-
 	A3+B2+C1 #= S.
 ```
 
-Lösungen künstlich länger gestalten, um die Laufzeit zu messen: (wird bei der Zeit automatisch wieder weggerechnet)
+Lösungen künstlich länger gestalten, um die Laufzeit zu messen: (wird bei der gemessenen Zeitangabe automatisch wieder weggerechnet)
 
 ```
 :/-$ exptrue(10^1), magischesquadrat3(M).
@@ -1720,7 +1718,7 @@ also ...
 ──███──────────────────────────────── 
 ```
 
-## Bsp 69
+## Bsp 69 (nur Anfragen)
 
 ```
 :- damen_brettgröße_(Ds, 8, Zs), labeling_zs([], Zs).
