@@ -42,7 +42,7 @@
 	- [Bsp 45](#bsp-45)
 	- [Bsp 46](#bsp-46)
 - [10.04.19](#100419)
-	- [Bsp 47*](#bsp-47-*)
+	- [Bsp 47*](#bsp-47)
 	- [Bsp 48](#bsp-48)
 	- [Bsp 49](#bsp-49)
 	- [Bsp 50](#bsp-50)
@@ -52,7 +52,7 @@
 	- [Bsp 54](#bsp-54)
 	- [Bsp 55](#bsp-55)
 	- [Bsp 56](#bsp-56)
-	- [Bsp 57*](#bsp-57-*)
+	- [Bsp 57*](#bsp-57)
 - [08.05.19](#080519)
 	- [Bsp 58](#bsp-58)
 	- [Bsp 59](#bsp-59)
@@ -1147,9 +1147,9 @@ zahlenpaar(paar(X,Y)) :-
 
 # 10.04.19
 
-## Bsp 47 *
+## Bsp 47
 
-Bei diesem Beispiel handelt es sich um eine eigene Lösung und nicht um die Mitschrift aus der VO. Alle Angaben ohne Gewähr.
+*Bei diesem Beispiel handelt es sich um eine eigene Lösung und nicht um die Mitschrift aus der VO. Alle Angaben ohne Gewähr.*
 
 ```
 :- geladen(^^40).
@@ -1490,9 +1490,9 @@ Xs = [A,B,C], Xs ins 1..3.
 Xs = [A,B,C], Xs ins 1..3, keineelement_vonzs(2,Xs).
 ```
 
-## Bsp 57 *
+## Bsp 57
 
-Bei diesem Beispiel handelt es sich um eine eigene Lösung und nicht um die Mitschrift aus der VO. Alle Angaben ohne Gewähr.
+*Bei diesem Beispiel handelt es sich um eine eigene Lösung und nicht um die Mitschrift aus der VO. Alle Angaben ohne Gewähr.*
 
 ```
 %Ja, man soll hier wirklich das '¡' verwenden
