@@ -42,7 +42,7 @@
 	- [Bsp 45](#bsp-45)
 	- [Bsp 46](#bsp-46)
 - [10.04.19](#100419)
-	- [Bsp 47](#bsp-47)
+	- [Bsp 47*](#bsp-47-*)
 	- [Bsp 48](#bsp-48)
 	- [Bsp 49](#bsp-49)
 	- [Bsp 50](#bsp-50)
@@ -52,6 +52,7 @@
 	- [Bsp 54](#bsp-54)
 	- [Bsp 55](#bsp-55)
 	- [Bsp 56](#bsp-56)
+	- [Bsp 57*](#bsp-57-*)
 - [08.05.19](#080519)
 	- [Bsp 58](#bsp-58)
 	- [Bsp 59](#bsp-59)
@@ -1146,9 +1147,9 @@ zahlenpaar(paar(X,Y)) :-
 
 # 10.04.19
 
-## Bsp 47
+## Bsp 47 *
 
-Hierbei handelt es sich bei diesem Beispiel um eine eigene Lösung und nicht um die Mitschrift aus der VO. Alle Angaben ohne Gewähr.
+Bei diesem Beispiel handelt es sich um eine eigene Lösung und nicht um die Mitschrift aus der VO. Alle Angaben ohne Gewähr.
 
 ```
 :- geladen(^^40).
@@ -1487,6 +1488,32 @@ hrätsel_(Xs, Zs) :-
 
 Xs = [A,B,C], Xs ins 1..3.
 Xs = [A,B,C], Xs ins 1..3, keineelement_vonzs(2,Xs).
+```
+
+## Bsp 57 *
+
+Bei diesem Beispiel handelt es sich um eine eigene Lösung und nicht um die Mitschrift aus der VO. Alle Angaben ohne Gewähr.
+
+```
+%Ja, man soll hier wirklich das '¡' verwenden
+:-¡ phrase(hfigur(_),_).
+:/-¡ phrase(hfigur(_),_), false.
+:- Zs = [1,2,3,4,5,6,7], phrase(hfigur(Zs), Cs).
+:/- Zs = [1,2,3,4,5,6,7], phrase(hfigur(Zs), Cs), false.
+:- Zs = [1,2,3,4,5,6,7], Cs = "1     5\n|     |\n2--4--6\n3     7", phrase(hfigur(Zs), Cs). %Kann als Lösung von oben gewonnen werden
+
+hfigur([X1,X2,X3,X4,X5,X6,X7]) -->
+	integer_mitstellen(X1,0),
+	integer_mitstellen(X5,6), %6 deshalb, weil die Ziffer zu diesen 6 Zeichen zählt | vergleichbar mit "padleft" aus vielen Programmiersprachen
+	"\n|     |\n",
+	integer_mitstellen(X2,0),
+	"--",
+	integer_mitstellen(X4,0),
+	"--",
+	integer_mitstellen(X6,0),
+	"\n|     |\n",
+	integer_mitstellen(X3,0),
+	integer_mitstellen(X7,6),
 ```
 
 # 08.05.19
