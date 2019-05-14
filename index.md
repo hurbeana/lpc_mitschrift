@@ -1542,7 +1542,7 @@ tRNA(Descr) -->
 	seq(B1),
 	seq(Inner),
 	komplseq(B1),
-	{Inner = inner(F2,F3,F4,F5,F6,F7,F8,B2,B3,B4)},
+	{phrase(inner(F2,F3,F4,F5,F6,F7,F8,B2,B3,B4), Inner)},
 	seq(F9).
 
 inner(F2,F3,F4,F5,F6,F7,F8,B2,B3,B4) -->
