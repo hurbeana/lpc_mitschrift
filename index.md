@@ -60,6 +60,13 @@
 	- [Bsp 61](#bsp-61)
 	- [Bsp 62-68](#bsp-62---68)
 	- [Bsp 69 (nur Anfragen)](#bsp-69-nur-anfragen)
+- [15.05.19](#150519)
+	- [Bsp 64](#bsp-64)
+	- [Bsp 65](#bsp-65)
+	- [Bsp 66](#bsp-66)
+	- [Bsp 67](#bsp-67)
+	- [Bsp 68](#bsp-68)
+- [22.05.19](#220519)
 
 
 # 13.03.19
@@ -1691,7 +1698,7 @@ Ist am 08.05.2019 nicht behandelt worden ¯\_(ツ)_/¯
 
 also ...
 
-![nothing to do here](https://ih1.redbubble.net/image.121777184.2054/flat,550x550,075,f.u3.jpg)
+![nothing to do here](https://ibb.co/bgpq6MP)
 
 ## Bsp 69 (nur Anfragen)
 
@@ -1706,3 +1713,180 @@ also ...
 
 :-$ nqueens(Ds) <<< damen_brettgröße_(Ds, 120, Zs), queenslabeling(Zs). %Gibt die dazugehörigen Sachen für queenslabeling verlinkt | seq und iseq (invseq) haben wir bereits selbst gemacht, den Rest muss man kopieren
 ```
+
+# 15.05.19
+
+## Bsp 64
+
+```
+:- is_task(T).
+:/- is_task(T), false.
+
+:- task_nichtüberschneidend(T1, T2).
+:/- task_nichtüberschneidend(T1, T2), false.
+
+task_nichtüberschneidend(T1, T2) :-
+	T1 = task(_, B1, D1),
+	T2 = task(_, B2, D2),
+	D1 #>= 0,
+	D2 #>= 0,
+	B1 + D1 #=< B2.
+task_nichtüberschneidend(T1, T2) :-
+	T1 = task(_, B1, D1),
+	T2 = task(_, B2, D2),
+	D1 #>= 0,
+	D2 #>= 0,
+	B2 + D2 #=< B1.
+
+:- [B1,D1,B2,D2] ins -3..3, T1 = task(a,B1,D1), T2 = task(b,B2,D2), task_nichtüberschneidend(T1,T2).
+```
+
+Man sieht: es gibt Redundanzen
+
+Sie treten dann auf, wenn D1 und D2 0 sind und B1=B2 gilt
+
+```
+% Bei N=3 gibt es 8 (statt 6) Ansätze, weil *A vor B*, *B vor C* und *C vor A* z.B. als Scheinlösung sich hineingeschummelt hat
+:- list_length(Ts, N), nichtgleichzeitigetasks(Ts).
+
+nichtgleichzeitigetasks([]).
+nichtgleichzeitigetasks([T|Ts]) :-
+	task_nichtüberschneidend(Ts,T),
+	nichtgleichzeitigetasks(Ts).
+
+tasks_nichtüberschneidend([], S).
+tasks_nichtüberschneidend([T|Ts], S) :-
+	task_nichtüberschneidend(T, S),
+	tasks_nichtüberschneidend(Ts, S).
+```
+
+## Bsp 65
+
+```
+:- ressourcenverwendung_plan(RV, Ts).
+:/-& ressourcenverwendung_plan(RV, Ts), false.
+
+:- Ts = [_,_,_], ressourcenverwendung_plan(RV, Ts).
+:/-& Ts = [_,_,_], ressourcenverwendung_plan(RV, Ts), false.
+:- RV = [_,_,_,_], Ts = [_,_,_], ressourcenverwendung_plan(RV, Ts).
+:/-& RV = [_,_,_,_], Ts = [_,_,_], ressourcenverwendung_plan(RV, Ts), false.
+
+ressourcenverwendung_plan([], _).
+ressourcenverwendung_plan([_-Ns|RVs], Ts) :-
+	namen_tasks_inplan(Ns, Tasks, Ts),
+	nichtgleichzeitigetasks(Tasks),
+	ressourcenverwendung_plan(RVs, Ts).
+
+namen_tasks_inplan([], [], _).
+namen_tasks_inplan([N|Ns], [Task|Tasks], Plan) :-
+	Task = task(N, _, _),
+	element_von(Task, Plan),
+	namen_tasks_inplan(Ns, Tasks, Plan).
+
+element_von(E, [E|_]).
+element_von(E, [_|Es]) :-
+	element_von(E, Es).
+```
+
+## Bsp 66
+
+```
+:- db_tasks(DB, Tasks).
+:- db_resources(DB, Rs).
+
+:- db_resplan_(DB, Plan, Zs).
+:/-$ db_resplan_(DB, Plan, Zs), false.
+
+:- plangraph(DB-Plan) <<< db_resplan_(DB, Plan, Zs), labeling_zs([], Zs).
+
+:- tdds_tasks_bs(TDDs, Tasks, Bs).
+
+tdds_tasks_bs([],[],[]).
+tdds_tasks_bs([TDD|TDDs], [task(N,B,D)|Tasks], [B|Bs]) :-
+	TDD = task_descr_duration(N, _, D),
+	tdds_tasks_bs(TDDs, Tasks, Bs).
+
+db_resplan_(DB, Plan, Zs) :-
+	db_tasks(DB, TDDs),
+	tdds_tasks_bs(TDDs, Plan, Zs),
+	Zs ins 0..200,
+	db_resources(DB, RVs),
+	ressourcenverwendung_plan(RVs, Plan).
+
+
+```
+
+## Bsp 67
+
+```
+:- otyp_folgen_plan(OTyp, Folgen, Plan).
+:/-& otyp_folgen_plan(OTyp, Folgen, Plan), false.
+:- Folgen = [_], Plan = [_,_], otyp_folgen_plan(OTyp, Folgen, Plan).
+:/- Folgen = [_], Plan = [_,_], otyp_folgen_plan(OTyp, Folgen, Plan), false.
+:- Folgen = [_,_,_], Plan = [_,_,_,_], otyp_folgen_plan(OTyp, Folgen, Plan).
+:/- Folgen = [_,_,_], Plan = [_,_,_,_], otyp_folgen_plan(OTyp, Folgen, Plan), false.
+
+otyp_folgen_plan(_, [], _).
+otyp_folgen_plan(OTyp, [Folge|Folgen], Plan) :-
+	Folge = dist(N1,N2,D),
+	Task1 = task(N1,_,_),
+	Task2 = task(N2,_,_),
+	element_von(Task1, Plan),
+	element_von(Task2, Plan),
+	otyp_t1_t2_d(Task1, Task2, D),
+	otyp_folgen_plan(OTyp, Folgen, Plan).
+
+otyp_t1_t2_d(M:EA1-EA2, task(_, B1, D1), task(_, B2, D2), D) :-
+	ea_b_d_z(EA1, B1, D1, Z1),
+	ea_b_d_z(EA2, B2, D2, Z2),
+	m_z1_z2_e(M, Z1, Z2, 0).
+
+m_z1_z2_e(min, Z1, Z2, D) :-
+	Z2-Z1 #>= D.
+m_z1_z2_e(min, Z1, Z2, D) :-
+	Z2-Z1 #=< D.
+
+ea_b_d_z(e, B, D, Z) :-
+	z #= B+D
+ea_b_d_z(a, B, _, Z).
+
+
+```
+
+## Bsp 68
+
+```
+:- db_otyp_folgen(DB, OTyp, Folgen).
+:- db_otyp_folgen(big, OTyp, Folgen).
+
+:- db_plan_max_(DB, Plan, Max, Zs).
+:/- db_plan_max_(DB, Plan, Max, Zs), false.
+
+:-$ brückengraph(DB-Plan) <<< Max in 0..200, labeling_zs([], [Max]), db_plan_max_(DB, Plan, Max, Zs), labeling_zs([], Zs).
+
+:-$ brückengraph(DB-Plan) <<< Max in 0..200, DB = big, labeling_zs([], [Max]), db_plan_max_(DB, Plan, Max, Zs), labeling_zs([], Zs).
+
+db_plan_max_(DB, Plan, Max, Zs) :-
+	db_tasks(DB, TDDs),
+	tdds_tasks_bs(TDDs, Plan, Zs),
+	Zs ins 0..200,
+	db_resources(DB, RVs),
+	max_ofzs(Max, Zs),
+	db_otyp_plan(DB, min:a-a, Plan),
+	db_otyp_plan(DB, min:a-e, Plan),
+	db_otyp_plan(DB, min:e-a, Plan),
+	db_otyp_plan(DB, min:e-e, Plan),
+	db_otyp_plan(DB, max:a-a, Plan),
+	db_otyp_plan(DB, max:a-e, Plan),
+	db_otyp_plan(DB, max:e-a, Plan),
+	db_otyp_plan(DB, max:e-e, Plan),
+	ressourcenverwendung_plan(RVs, Plan).
+
+db_otyp_plan(DB, OTyp, Plan) :-
+	db_otyp_folgen(DB, OTyp, Folgen),
+	otyp_folgen_plan(OTyp, Folgen, Plan).
+```
+
+# 22.05.19
+
+tbc
