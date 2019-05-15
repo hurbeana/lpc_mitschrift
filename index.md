@@ -1635,6 +1635,10 @@ Lösungen künstlich länger gestalten, um die Laufzeit zu messen: (wird bei der
 
 :- exptrue(10^3), magischesquadrat3nred(M).
 
+magischesquadrat3nred(M) :-
+	magischesquadrat3nred_(M, Zs),
+	labeling_zs([], Zs).
+
 magischesquadrat3nred_(M, Zs) :-
 	magischesquadrat3_(M, Zs), %Kernrelation verwenden, um auch hier das labeling auszulagern
 	M = [[A1,_,A3],_,[C1,_,C3]],
@@ -1661,6 +1665,7 @@ magischesquadrat3nred_(M, Zs) :-
 :/- K = [_,_,_], liste_aufsteigend(L, K), false.
 
 liste_aufsteigend(L, Ls) :-
+	liste_gleichlang(L, Ls),
 	phrase(aufsteigend(L), Ls).
 
 aufsteigend([]) -->
