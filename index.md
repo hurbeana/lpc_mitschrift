@@ -1698,7 +1698,7 @@ Ist am 08.05.2019 nicht behandelt worden ¯\_(ツ)_/¯
 
 also ...
 
-![nothing to do here](https://ibb.co/bgpq6MP)
+![nothing to do here](https://i.ibb.co/pvCG1Bx/Nothing-To-See-Here.png)
 
 ## Bsp 69 (nur Anfragen)
 
