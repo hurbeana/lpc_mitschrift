@@ -61,6 +61,7 @@
 	- [Bsp 62-68](#bsp-62---68)
 	- [Bsp 69 (nur Anfragen)](#bsp-69-nur-anfragen)
 - [15.05.19](#150519)
+	- [Bsp 63*](#bsp-63)
 	- [Bsp 64](#bsp-64)
 	- [Bsp 65](#bsp-65)
 	- [Bsp 66](#bsp-66)
@@ -1715,6 +1716,41 @@ also ...
 ```
 
 # 15.05.19
+
+## Bsp 63
+
+*Bei diesem Beispiel handelt es sich um eine eigene Lösung und nicht um die Mitschrift aus der VO. Alle Angaben ohne Gewähr.*
+
+```
+:- phrase(papierfaltung(X), LRs).
+:/- phrase(papierfaltung(X), LRs), false.
+:- phrase(papierfaltung(s(s(s(X)))), LRs).
+:/- phrase(papierfaltung(s(s(s(X)))), LRs), false.
+
+:- lrs(LRs) <<< phrase(papierfaltung(s(0)), LRs).
+:- lrs(LRs) <<< natürlichezahlsx(X), phrase(papierfaltung(X), LRs).
+
+papierfaltung(s(0)) -->
+	"r".
+papierfaltung(s(X)) -->
+	{phrase(papierfaltung(X), A)},
+	A,
+	"r",
+	kompl(A).
+
+:- phrase(kompl(A), B).
+:- list_length(LRs, N), phrase(kompl(X), LRs).
+
+kompl([]) -->
+	"".
+kompl([E|Es]) -->
+	{faltung_kompl(E,F)},
+	kompl(Es),
+	[F].
+
+faltung_kompl('l','r').
+faltung_kompl('r','l').
+```
 
 ## Bsp 64
 
