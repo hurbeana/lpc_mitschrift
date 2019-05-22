@@ -59,7 +59,7 @@
 	- [Bsp 60](#bsp-60)
 	- [Bsp 61](#bsp-61)
 	- [Bsp 62-68](#bsp-62---68)
-	- [Bsp 69 (nur Anfragen)](#bsp-69-nur-anfragen)
+	- [Bsp 69](#bsp-69)
 - [15.05.19](#150519)
 	- [Bsp 63*](#bsp-63)
 	- [Bsp 64](#bsp-64)
@@ -68,6 +68,10 @@
 	- [Bsp 67](#bsp-67)
 	- [Bsp 68](#bsp-68)
 - [22.05.19](#220519)
+	- [Bsp 62](#bsp-63)
+	- [Bsp 70](#bsp-70)
+	- [Bsp 71](#bsp-71)
+	- [Bsp 72](#bsp-72)
 
 
 # 13.03.19
@@ -1701,7 +1705,7 @@ also ...
 
 ![nothing to do here](https://i.ibb.co/pvCG1Bx/Nothing-To-See-Here.png)
 
-## Bsp 69 (nur Anfragen)
+## Bsp 69
 
 ```
 :- damen_brettgröße_(Ds, 8, Zs), labeling_zs([], Zs).
@@ -1925,4 +1929,79 @@ db_otyp_plan(DB, OTyp, Plan) :-
 
 # 22.05.19
 
-tbc
+## Bsp 62
+
+```
+ausdruck_liste(Expr, L) :-
+	phrase(ausdruck(Expr), L).
+
+ausdruck(Xs) -->
+	seq(Xs).
+ausdruck(?) -->
+	[_].
+ausdruck(X+_Y) -->
+	ausdruck(X)
+ausdruck(_X+Y) -->
+	ausdruck(_Y)
+ausdruck(X*Y) -->
+	ausdruck(X),
+	ausdruck(Y).
+ausdruck({_X}) -->
+	[].
+ausdruck({X}) -->
+	ausdruck(X),
+	ausdruck({X}).
+```
+
+## Bsp 70
+
+```
+ist_matrix([]) :-
+ist_matrix([Xs|Xss]) :-
+	allegleichlang_mit(Xss, Xs).
+
+allegleichlang_mit([], _).
+allegleichlang_mit([Xs|Xss], Es) :-
+	liste_gleichlang(Xs, Es),
+	allegleichlang_mit(Xss, Es).
+```
+
+## Bsp 71
+
+```
+:- Xss = [_,_], matrix_transponiert(Xss, Yss). %2xn Matrix
+:/-& Xss = [_,_], matrix_transponiert(Xss, Yss), false.
+
+:- Xss = [_,_], Yss = [_], matrix_transponiert(Xss, Yss). %2x1 Matrix
+:/- Xss = [_,_], Yss = [_], matrix_transponiert(Xss, Yss), false.
+
+:- matrix_transponiert([[1,2,3],[4,5,6]], Yss).
+:/- matrix_transponiert([[1,2,3],[4,5,6]], Yss), false.
+:- matrix_transponiert(Xss, [[1,4],[2,5],[3,6]]).
+:/- matrix_transponiert(Xss, [[1,4],[2,5],[3,6]]), false.
+
+:- matrix_spalte_rest(Xss, Xs, Yss).
+:/-& matrix_spalte_rest(Xss, Xs, Yss), false.
+
+matrix_spalte_rest([], [], []).
+matrix_spalte_rest([[E|Xs]|Xss], [E|Es], [Xs|Yss]) :-
+	matrix_spalte_rest(Xss, Es, Yss).
+
+matrix_transponiert(Xss, []) :-
+	nils(Xss).
+matrix_transponiert(Xss, XssT) :- %um es korrekt zu machen, müsste man das Verpacken in eine andere Definition die prüft, ob beide Listen zumindest 1 Element haben
+	matrix_spalte_rest(Xss, Es, Yss),
+	matrix_transponiert(Yss, XssT).
+
+nils([]).
+nils([[]|Nils]) :-
+	nils(Nils).
+```
+
+## Bsp 72
+
+Wenn ich das richtig verstanden habe, ist dieses Beispiel ein einfacher Fragebogen.
+
+Wer bis hier gelesen hat, hat sich noch ein besonderes Goodie verdient:
+
+![potato](https://pics.me.me/sorry-for-the-long-post-heres-a-potato-14024311.png)
