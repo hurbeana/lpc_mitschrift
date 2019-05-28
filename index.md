@@ -1682,7 +1682,7 @@ liste_aufsteigend(L, Ls) :-
 
 aufsteigend([]) -->
 	[].
-aufsteigend(_) -->
+aufsteigend([X|Xs]) -->
 	{es_x_klgls_grs(Xs, X, KlGls, Grs)},
 	aufsteigend(KlGls),
 	[X],
