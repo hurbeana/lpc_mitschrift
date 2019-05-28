@@ -1883,12 +1883,12 @@ otyp_t1_t2_d(M:EA1-EA2, task(_, B1, D1), task(_, B2, D2), D) :-
 
 m_z1_z2_e(min, Z1, Z2, D) :-
 	Z2-Z1 #>= D.
-m_z1_z2_e(min, Z1, Z2, D) :-
+m_z1_z2_e(max, Z1, Z2, D) :-
 	Z2-Z1 #=< D.
 
 ea_b_d_z(e, B, D, Z) :-
 	z #= B+D
-ea_b_d_z(a, B, _, Z).
+ea_b_d_z(a, B, _, B).
 
 
 ```
