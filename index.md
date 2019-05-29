@@ -1989,7 +1989,7 @@ matrix_spalte_rest([[E|Xs]|Xss], [E|Es], [Xs|Yss]) :-
 
 matrix_transponiert(Xss, []) :-
 	nils(Xss).
-matrix_transponiert(Xss, XssT) :- %um es korrekt zu machen, müsste man das Verpacken in eine andere Definition die prüft, ob beide Listen zumindest 1 Element haben
+matrix_transponiert(Xss, [Es|XssT]) :- %um es korrekt zu machen, müsste man das Verpacken in eine andere Definition die prüft, ob beide Listen zumindest 1 Element haben
 	matrix_spalte_rest(Xss, Es, Yss),
 	matrix_transponiert(Yss, XssT).
 
