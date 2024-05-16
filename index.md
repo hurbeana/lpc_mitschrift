@@ -1536,46 +1536,74 @@ Durch verneinen der vorgegebenen Kette ("CCCTTGTCGAT..") eine Lösung von der Re
 
 Erkenntnisse: `bindung("CGA", [frei("TGG")])` ist erlaub, hingegen `bindung("CG", [frei("TGG")])` aber nicht, weil Bindung mindestens 3 Zeichen haben muss
 
-```
-%Einrückung nur wegen der Übersicht
+Beachte, dass auch bei der schnellen Variante (tRNA2) bei vielen Terminationsannotationen (z.B. `:/-$ subgenom_(Bs,131,206), phrase(tRNA2(F), Bs), false.` trotzdem das "$" Zeichen (teuer) notwendig ist. 
 
+```prolog
 tRNA(Descr) -->
-	{Descr = [frei(F1), bindung(B1, Faltung), frei(F9)]},
-	{Faltung = [frei(F2), bindung(B2, [frei(F3)]), frei(F4), bindung(B3, [frei(F5)]), frei(F6), bindung(B4, [frei(F7)]), frei(F8)]},
+	{Descr = [frei(F1),bindung(B1, Innerefaltung), frei(F2)]},
 	{B1 = [_,_,_|_]},
+	{Innerefaltung = [frei(F3),bindung(B2, [frei(L1)]),frei(F4),bindung(B3,[frei(L2)]),frei(F5),bindung(B4,[frei(L3)]),frei(F6)]},
 	{B2 = [_,_,_|_]},
 	{B3 = [_,_,_|_]},
 	{B4 = [_,_,_|_]},
-	{F3 = [_,_,_|_]},
-	{F5 = [_,_,_,_,_|_]},
-	{F7 = [_,_,_|_]},
-	{Inner = [_,_,_,_,_, _,_,_,_,_, _,_,_,_,_, _,_,_,_,_, _,_,_,_,_, _,_,_,_|_]}, %Inner muss mindestens 29 Zeichen haben
+	{L1 = [_,_,_|_]},
+	{L2 = [_,_,_,_,_|_]},
+	{L3 = [_,_,_|_]},
+	seq(F1),
+	seq(B1),
+	seq(F3),
+	seq(B2),
+	seq(L1),
+	komplseq(B2),
+	seq(F4),
+	seq(B3),
+	seq(L2),
+	komplseq(B3),
+	seq(F5),
+	seq(B4),
+	seq(L3),
+	komplseq(B4),
+	seq(F6).
+	komplseq(B1),
+	seq(F2).
+
+tRNA2(Descr) -->
+	{Descr = [frei(F1),bindung(B1, Innerefaltung), frei(F2)]},
+	{B1 = [_,_,_|_]},
+	{Innerefaltung = [frei(F3),bindung(B2, [frei(L1)]),frei(F4),bindung(B3,[frei(L2)]),frei(F5),bindung(B4,[frei(L3)]),frei(F6)]},
+	{B2 = [_,_,_|_]},
+	{B3 = [_,_,_|_]},
+	{B4 = [_,_,_|_]},
+	{L1 = [_,_,_|_]},
+	{L2 = [_,_,_,_,_|_]},
+	{L3 = [_,_,_|_]},
+	{Inner = [_,_,_,_,_, _,_,_,_,_, _,_,_,_,_, _,_,_,_,_, _,_,_,_,_, _,_,_,_ | _]}, % mindestens 29
 	seq(F1),
 	seq(B1),
 	seq(Inner),
 	komplseq(B1),
-	{phrase(inner(F2,F3,F4,F5,F6,F7,F8,B2,B3,B4), Inner)},
-	seq(F9).
+	{phrase(inner(F3,F4,F5,F6,L1,L2,L3,B2,B3,B4), Inner)},
+	seq(F2).
 
-inner(F2,F3,F4,F5,F6,F7,F8,B2,B3,B4) -->
-	seq(F2),
+inner (F3,F4,F5,F6,L1,L2,L3,B2,B3,B4) -->	
+	seq(F3),
 	seq(B2),
-		seq(F3),
+	seq(L1),
 	komplseq(B2),
 	seq(F4),
 	seq(B3),
-		seq(F5), %Anticodon
+	seq(L2),
 	komplseq(B3),
-	seq(F6),
+	seq(F5),
 	seq(B4),
-		seq(F7),
+	seq(L3),
 	komplseq(B4),
-	seq(F8),
+	seq(F6).
 ```
 
 Damit die vorgegebene Lösung (und die Verneinung) ohne $ funktionieren, war eine Korrektur bei komplseq notwendig, wo die Zeile in den geschwungenen Klammern in die mittlere Zeile verschoben wurde.
 
-```
+```prolog
 komplseq([B|Bs]) -->
 	komplseq(Bs),
 	{base_kompl(B,C)},
